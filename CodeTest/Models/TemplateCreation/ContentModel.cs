@@ -16,5 +16,12 @@ namespace CodeTest.Models.Template
         public string? BorderColor { get; set; } // Card border color
         public string? Image { get; set; } // Base64 string for image
         public string? ImageType { get; set; } // Image type: cover, rounded
+        public string? HeadingColor { get; set; }
+        public string? HeadingText { get; set; }
+        public string? ParagraphColor { get; set; }
+        public string? ParagraphText { get; set; }
+        public string? Width { get; set; }
+        public string? Height { get; set; }
+        public string? LogoName { get; set; }
     }
 }

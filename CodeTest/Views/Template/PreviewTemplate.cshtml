@@ -27,9 +27,23 @@
                     <footer>@content.Footer</footer>
                 </div>
             }
-            else if (content.Type == "image")
+    @*         else if (content.Type == "image")
             {
                 <img src="data:image/png;base64,@content.Image" alt="Uploaded Image" style="width: 100%; @(content.ImageType == "rounded" ? "border-radius: 10px;" : content.ImageType == "circle" ? "border-radius: 50%;" : "")" />
+            } *@
+            @if (content.Type == "group")
+            {
+                <div class="group-container" style="margin-bottom: 20px;">
+                    <@content.Level style="color: @content.HeadingColor;">@content.HeadingText</@content.Level>
+                    <p style="color: @content.ParagraphColor;">@content.ParagraphText</p>
+                </div>
+            }
+            @if (content.Type == "image")
+            {
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="data:image/png;base64,@content.Image" alt="Uploaded Image" style="width: @(content.Width)px; height: @(content.Height)px; @(content.ImageType == "rounded" ? "border-radius: 10px;" : content.ImageType == "circle" ? "border-radius: 50%;" : "")" />
+                    <p>@content.LogoName</p>
+                </div>
             }
         }
     </div>

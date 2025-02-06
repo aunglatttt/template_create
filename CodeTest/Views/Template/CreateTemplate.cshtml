@@ -1,5 +1,6 @@
 ﻿@model CodeTest.Models.Template.TemplateModel
 
+
 @{
     ViewData["Title"] = "Create Template";
 }
@@ -10,7 +11,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control" placeholder="Enter template name" />
+                <input asp-for="Name" class="form-control" placeholder="Enter template name" required />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
@@ -25,6 +26,7 @@
                     <option value="paragraph">Paragraph</option>
                     <option value="card">Card</option>
                     <option value="image">Image</option>
+                    <option value="group">Group (Heading + Paragraph)</option>
                 </select>
             </div>
         </div>
@@ -48,7 +50,7 @@
 
 @section Scripts {
     <script>
-             $(document).ready(function () {
+        $(document).ready(function () {
             // Add content dynamically
             $('#addContentBtn').click(function () {
                 var contentType = $('#contentType').val();
@@ -134,6 +136,18 @@
                                         <input type="file" class="form-control-file image-upload" accept="image/*" required />
                                     </div>
                                     <div class="form-group">
+                                        <label>Image Logo Name</label>
+                                        <input type="text" class="form-control image-logo-name" placeholder="Enter logo name" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Image Width (px)</label>
+                                        <input type="number" class="form-control image-width" placeholder="Enter width" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Image Height (px)</label>
+                                        <input type="number" class="form-control image-height" placeholder="Enter height" required />
+                                    </div>
+                                    <div class="form-group">
                                         <label>Image Type</label>
                                         <select class="form-control image-type">
                                             <option value="cover">Cover</option>
@@ -141,6 +155,40 @@
                                             <option value="circle">Circle</option>
                                             <option value="thumbnail">Thumbnail</option>
                                         </select>
+                                    </div>
+                                    <button type="button" class="btn btn-danger removeContentBtn">Remove</button>
+                                </div>
+                            </div>`;
+                        break;
+                    case 'group':
+                        contentHtml = `
+                            <div class="group-container card mt-3 mb-3">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Heading Level</label>
+                                        <select class="form-control heading-level">
+                                            <option value="h1">Heading 1</option>
+                                            <option value="h2">Heading 2</option>
+                                            <option value="h3">Heading 3</option>
+                                            <option value="h4">Heading 4</option>
+                                            <option value="h5">Heading 5</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Heading Text</label>
+                                        <input type="text" class="form-control heading-text" placeholder="Enter heading text" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Heading Color</label>
+                                        <input type="color" class="form-control heading-color" value="#000000" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Paragraph Text</label>
+                                        <textarea class="form-control paragraph-text" placeholder="Enter paragraph text" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Paragraph Color</label>
+                                        <input type="color" class="form-control paragraph-color" value="#000000" />
                                     </div>
                                     <button type="button" class="btn btn-danger removeContentBtn">Remove</button>
                                 </div>
@@ -167,16 +215,27 @@
                 var contentPromises = $('.card').map(async function () {
                     var content = {};
 
-                    if ($(this).find('.heading-level').length > 0) {
+                    if ($(this).find('.heading-level').length > 0 && $(this).find('.paragraph-text').length > 0) {
+                        // Group (Heading + Paragraph)
+                        content.Type = 'group';
+                        content.Level = $(this).find('.heading-level').val();
+                        content.HeadingText = $(this).find('.heading-text').val();
+                        content.HeadingColor = $(this).find('.heading-color').val();
+                        content.ParagraphText = $(this).find('.paragraph-text').val();
+                        content.ParagraphColor = $(this).find('.paragraph-color').val();
+                    } else if ($(this).find('.heading-level').length > 0) {
+                        // Heading
                         content.Type = 'heading';
                         content.Level = $(this).find('.heading-level').val();
                         content.Text = $(this).find('.heading-text').val();
                         content.Color = $(this).find('.heading-color').val();
                     } else if ($(this).find('.paragraph-text').length > 0) {
+                        // Paragraph
                         content.Type = 'paragraph';
                         content.Text = $(this).find('.paragraph-text').val();
                         content.Color = $(this).find('.paragraph-color').val();
                     } else if ($(this).find('.card-header').length > 0) {
+                        // Card
                         content.Type = 'card';
                         content.Header = $(this).find('.card-header').val();
                         content.Body = $(this).find('.card-body').val();
@@ -184,10 +243,14 @@
                         content.Color = $(this).find('.card-color').val() || '#ffffff'; // Default color
                         content.BorderColor = $(this).find('.card-border-color').val();
                     } else if ($(this).find('.image-upload').length > 0) {
+                        // Image
                         content.Type = 'image';
                         var file = $(this).find('.image-upload')[0].files[0];
                         if (file) {
                             content.Image = await readFileAsBase64(file);
+                            content.LogoName = $(this).find('.image-logo-name').val();
+                            content.Width = $(this).find('.image-width').val();
+                            content.Height = $(this).find('.image-height').val();
                             content.ImageType = $(this).find('.image-type').val();
                         }
                     }
@@ -225,5 +288,5 @@
                 });
             }
         });
-</script>
+    </script>
 }

@@ -14,6 +14,7 @@
                 <tr>
                     <th>No.</th>
                     <th>Template Name</th>
+                    <th>Fields</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -24,6 +25,7 @@
                     <tr>
                         <td>@index</td>
                         <td>@item.Name</td>
+                        <td>@string.Join(", ", item.Fields.Select(x => x.FieldName))</td> <!-- Display field names as a comma-separated string -->
                         <td class="text-center">
                             <a href="@Url.Action("Preview", "Home", new { templateId = item.Id })" class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview">
                                 <i class="bi bi-eye"></i> Preview

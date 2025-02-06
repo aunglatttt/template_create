@@ -15,7 +15,7 @@ namespace CodeTest.Controllers
 
         public async Task<IActionResult> TemplateList()
         {
-            return View(await _context.Templates.ToListAsync());
+            return View(await _context.Templates.AsNoTracking().Include(x => x.Fields).ToListAsync());
         }
     }
 }

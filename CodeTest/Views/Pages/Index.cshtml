@@ -1,0 +1,34 @@
+﻿@model IEnumerable<CMSPage>
+
+@{
+    ViewData["Title"] = "Manage CMS Pages";
+}
+
+<div class="container">
+    <h1 class="my-4">Manage CMS Pages</h1>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-4">Create New Page</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.CreatedAt</td>
+                    <td>
+                        <a href="@Url.Action("ViewPage", new { id = item.Id })" class="btn btn-info btn-sm">View</a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,4 +1,4 @@
-﻿@model TemplateNotused
+﻿@model CodeTest.Models.Template.TemplateModel
 
 @{
     ViewData["Title"] = "Create Template";
@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control" placeholder="Enter template name" required />
+                <input asp-for="Name" class="form-control" placeholder="Enter template name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
@@ -48,7 +48,7 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
+             $(document).ready(function () {
             // Add content dynamically
             $('#addContentBtn').click(function () {
                 var contentType = $('#contentType').val();
@@ -199,7 +199,7 @@
                 formData.Contents = await Promise.all(contentPromises);
 
                 // Send data to server
-                fetch('/Home/SaveTemplate', {
+                fetch('/Template/SaveTemplate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -209,7 +209,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.href = '/Home/Preview';
+                       window.location.href = '/Template/PreviewTemplate';
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -225,5 +225,5 @@
                 });
             }
         });
-    </script>
+</script>
 }

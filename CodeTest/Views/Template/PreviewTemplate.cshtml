@@ -1,0 +1,36 @@
+﻿@model CodeTest.Models.Template.TemplateModel
+
+<div class="container">
+    <h2>Template Preview</h2>
+    <div>
+        <h3>@Model.Name</h3>
+        @foreach (var content in Model.Contents)
+        {
+            if (content.Type == "heading")
+            {
+                var headingTag = content.Level ?? "h1"; // Default to h1 if not specified
+                <text>
+                    <@headingTag style="color: @(content.Color ?? "#000000");">
+                        @content.Text
+                    </@headingTag>
+                </text>
+            }
+            else if (content.Type == "paragraph")
+            {
+                <p style="color: @(content.Color ?? "#000000");">@content.Text</p>
+            }
+            else if (content.Type == "card")
+            {
+                <div style="border: 2px solid @(content.BorderColor ?? "#000000"); background-color: @(content.Color ?? "#ffffff"); padding: 10px;">
+                    <h4>@content.Header</h4>
+                    <p>@content.Body</p>
+                    <footer>@content.Footer</footer>
+                </div>
+            }
+            else if (content.Type == "image")
+            {
+                <img src="data:image/png;base64,@content.Image" alt="Uploaded Image" style="width: 100%; @(content.ImageType == "rounded" ? "border-radius: 10px;" : content.ImageType == "circle" ? "border-radius: 50%;" : "")" />
+            }
+        }
+    </div>
+</div>

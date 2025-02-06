@@ -42,7 +42,7 @@ namespace CodeTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult Template(Template template)
+        public ActionResult Template(TemplateNotused template)
         {
             if (ModelState.IsValid)
             {
@@ -131,7 +131,7 @@ namespace CodeTest.Controllers
         [HttpPost]
         public async Task<IActionResult> Preview([FromBody] TemplatePreviewViewModel model)
         {
-            var tempLate = new Template
+            var tempLate = new TemplateNotused
             {
                 Name = model.Name
             };

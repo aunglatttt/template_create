@@ -4,6 +4,7 @@ using CodeTest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeTest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250206164220_is")]
+    partial class @is
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,24 +33,30 @@ namespace CodeTest.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MetaDescription")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetaKeywords")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetaTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -74,7 +82,7 @@ namespace CodeTest.Migrations
                     b.Property<string>("Options")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TemplateNotusedId")
+                    b.Property<int?>("TemplateId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
@@ -83,7 +91,7 @@ namespace CodeTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TemplateNotusedId");
+                    b.HasIndex("TemplateId");
 
                     b.ToTable("DynamicFields");
                 });
@@ -128,73 +136,7 @@ namespace CodeTest.Migrations
                     b.ToTable("Payloads");
                 });
 
-            modelBuilder.Entity("CodeTest.Models.Template.ContentModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BorderColor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Footer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Header")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TemplateModelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TemplateModelId");
-
-                    b.ToTable("ContentModels");
-                });
-
-            modelBuilder.Entity("CodeTest.Models.Template.TemplateModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TemplateModels");
-                });
-
-            modelBuilder.Entity("CodeTest.Models.TemplateNotused", b =>
+            modelBuilder.Entity("CodeTest.Models.Template", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -213,24 +155,12 @@ namespace CodeTest.Migrations
 
             modelBuilder.Entity("CodeTest.Models.DynamicField", b =>
                 {
-                    b.HasOne("CodeTest.Models.TemplateNotused", null)
+                    b.HasOne("CodeTest.Models.Template", null)
                         .WithMany("Fields")
-                        .HasForeignKey("TemplateNotusedId");
+                        .HasForeignKey("TemplateId");
                 });
 
-            modelBuilder.Entity("CodeTest.Models.Template.ContentModel", b =>
-                {
-                    b.HasOne("CodeTest.Models.Template.TemplateModel", null)
-                        .WithMany("Contents")
-                        .HasForeignKey("TemplateModelId");
-                });
-
-            modelBuilder.Entity("CodeTest.Models.Template.TemplateModel", b =>
-                {
-                    b.Navigation("Contents");
-                });
-
-            modelBuilder.Entity("CodeTest.Models.TemplateNotused", b =>
+            modelBuilder.Entity("CodeTest.Models.Template", b =>
                 {
                     b.Navigation("Fields");
                 });

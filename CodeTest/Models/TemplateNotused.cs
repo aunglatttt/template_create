@@ -1,6 +1,6 @@
 ﻿namespace CodeTest.Models
 {
-    public class Template
+    public class TemplateNotused
     {
         public int Id { get; set; }
         public string Name { get; set; }

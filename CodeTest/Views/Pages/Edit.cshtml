@@ -1,0 +1,22 @@
+﻿@model CMSPage
+
+@{
+    ViewData["Title"] = "Edit CMS Page";
+}
+
+<div class="container">
+    <h1 class="my-4">Edit CMS Page</h1>
+
+    <form method="post">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="mb-3">
+            <label for="Title" class="form-label">Page Title</label>
+            <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required />
+        </div>
+        <div class="mb-3">
+            <label for="Content" class="form-label">Content</label>
+            <textarea class="form-control" id="Content" name="Content" rows="4" required>@Model.Content</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+</div>

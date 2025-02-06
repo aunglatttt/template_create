@@ -1,0 +1,21 @@
+﻿@model CMSPage
+
+@{
+    ViewData["Title"] = "Create CMS Page";
+}
+
+<div class="container">
+    <h1 class="my-4">Create New CMS Page</h1>
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="Title" class="form-label">Page Title</label>
+            <input type="text" class="form-control" id="Title" name="Title" required />
+        </div>
+        <div class="mb-3">
+            <label for="MetaDescription" class="form-label">Content</label>
+            <textarea class="form-control" id="MetaDescription" name="MetaDescription" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Save Page</button>
+    </form>
+</div>

@@ -1,0 +1,279 @@
+﻿@model Template
+
+@{
+    var count = 1;
+}
+
+<div class="container">
+    <h2>Create Template</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name)
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter template name" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter field name" id="FieldName" name="Name" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fieldType">Add Field:</label>
+                <select id="fieldType" class="form-control">
+                    <option value="text">Input Text</option>
+                    <option value="dropdown">Dropdown</option>
+                    <option value="checkbox">Checkbox</option>
+                    <option value="radio">Radio</option>
+                    <option value="image">Image</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <button type="button" id="addMainFieldBtn" class="btn btn-primary">Add Main Field</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-6 mt-3" id="addFieldBtnContainer" style="display: none;">
+        <div class="form-group">
+            <button type="button" id="addFieldBtn" class="btn btn-primary">Add Field</button>
+        </div>
+    </div>
+
+    <div class="mt-3 mb-3" id="mainContainer">
+        <div class="card mt-3 mb-3" style="width:49%;" id="subContainer">
+            <div id="dynamicFields" class="row" style="margin:1% auto 1% auto;">
+                <!-- Dynamic fields will be added here -->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <button class="btn btn-success" id="submitFormBtn">Create Template</button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var countFromServer = @count;
+
+        $(document).ready(function () {
+            $('#addFieldBtn').click(function () {
+                var fieldType = $('#fieldType').val();
+                var fieldHtml = '';
+
+                switch (fieldType) {
+                    case 'dropdown':
+                        fieldHtml = '<div class="form-group field-item">' +
+                            '<label>Input Option Name</label>' +
+                            ' <div class="input-group">' +
+                            '<input type="text" class="form-control" placeholder="Enter option name" id="Option" name="Option" />' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger removeFieldBtn">Remove</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        break;
+                    case 'checkbox':
+                        fieldHtml = '<div class="form-group field-item">' +
+                            '<label>Input Checkbox Name</label>' +
+                            ' <div class="input-group">' +
+                            '<input type="text" class="form-control" placeholder="Enter checkbox name" id="Checkbox" name="Checkbox" />' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger removeFieldBtn">Remove</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        break;
+                    case 'radio':
+                        fieldHtml = '<div class="form-group field-item">' +
+                            '<label>Input Radio Name</label>' +
+                            ' <div class="input-group">' +
+                            '<input type="text" class="form-control" placeholder="Enter radio name" id="Radio" name="Radio" />' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger removeFieldBtn">Remove</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        break;
+                    case 'image':
+                        fieldHtml = '<div class="form-group field-item">' +
+                            '<label>Upload Image</label>' +
+                            ' <div class="input-group">' +
+                            '<input type="file" class="form-control-file" accept="image/*" id="Image" name="Image" />' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger removeFieldBtn">Remove</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                        break;
+                }
+
+                $('#dynamicFields').append(fieldHtml);
+            });
+
+            $(document).on('click', '.removeFieldBtn', function () {
+                $(this).closest('.field-item').fadeOut(400, function () {
+                    $(this).remove();
+                });
+            });
+
+
+        });
+
+        function updateAddFieldButton() {
+            var fieldType = $('#fieldType').val();
+            var buttonText = '';
+
+            switch (fieldType) {
+                case 'dropdown':
+                    buttonText = 'Add Dropdown Item';
+                    break;
+                case 'checkbox':
+                    buttonText = 'Add Checkbox Item';
+                    break;
+                case 'radio':
+                    buttonText = 'Add Radio Item';
+                    break;
+                case 'image':
+                    buttonText = 'Add Image Upload Item';
+                    break;
+                default:
+                    buttonText = 'Add Field';
+            }
+
+            $('#addFieldBtn').text(buttonText);
+
+            if (fieldType === 'text') {
+                $('#addFieldBtnContainer').hide();
+            } else {
+                $('#addFieldBtnContainer').show();
+            }
+        }
+
+        $('#fieldType').change(function () {
+            updateAddFieldButton();
+            $('#dynamicFields').empty();
+        });
+
+        $('#addMainFieldBtn').click(function () {
+            console.log(countFromServer);
+
+
+            var clonedContainer = $('#subContainer').clone();
+
+            var cloneId = 'subContainer_' + countFromServer;
+            clonedContainer.attr('id', cloneId);
+
+            var cloneIdd = 'dynamicFields_' + countFromServer;
+            clonedContainer.find('.dynamicFields').attr('id', cloneIdd);
+
+            var fieldType = $('#fieldType').val();
+            var className = 'FieldType';
+            var IdName = className + "_" + countFromServer;
+            var inputHtml = '<input type="hidden" class="form-control" placeholder="Enter template name" id="T" name="FieldType" style="text-align: center;" />';
+            inputHtml = $(inputHtml);
+            inputHtml.attr('id', IdName);
+            inputHtml.attr('name', IdName);
+            inputHtml.attr('class', className);
+            inputHtml.val(fieldType);
+            clonedContainer.prepend(inputHtml);
+
+            var inputHtml2 = $('#FieldName').clone();
+            var inputCloneId = 'FieldName_' + countFromServer;
+            inputHtml2.attr('id', inputCloneId);
+            inputHtml2.css('text-align', 'center');
+            clonedContainer.prepend(inputHtml2);
+
+            clonedContainer.append('<button type="button" class="removeCardContainerBtn btn btn-danger">Remove</button>');
+
+            $('#mainContainer').append(clonedContainer);
+
+
+            $('#FieldName').val('');
+            $('#dynamicFields').empty();
+
+            countFromServer++;
+        });
+
+        $('#mainContainer').on('click', '.removeCardContainerBtn', function () {
+            $(this).closest('.card').remove();
+        });
+
+
+        $('#submitFormBtn').click(function () {
+            var formData = {
+                Name: $('#Name').val(),
+                ClonedCards: []
+            };
+
+            var clonedCardData = [];
+
+            $('.card[id^="subContainer_"]').each(function () {
+                var cardData = {
+                    FieldName: $(this).find('input[type="text"]').val(),
+                    Type: $(this).find('input[type="hidden"]').val(),
+                    Options: []
+                };
+
+                $(this).find('.field-item').each(function () {
+                    var optionName = $(this).find('input[type="text"]').val();
+                    cardData.Options.push(optionName);
+                    clonedCardData.push(optionName);
+                });
+
+                console.warn('cardata', cardData);
+                formData.ClonedCards.push(cardData);
+            });
+
+
+            //$.ajax({
+            //    url: '/Home/Preview',
+            //    type: 'POST',
+            //    contentType: 'application/json',
+            //    data: JSON.stringify(formData),
+            //    success: function (response) {
+            //        console.log('Data sent successfully');
+            //        console.log(response);
+            //    },
+            //    error: function (xhr, status, error) {
+            //        console.error('Error sending data:', error);
+            //    }
+            //});
+
+            fetch('/Home/Preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(function (response) {
+                    console.log('response', response);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    window.location.href = '/Home/Preview';
+                })
+                .catch(function (error) {
+                    console.error('Error sending data:', error);
+                });
+        });
+    </script>
+}

@@ -1,0 +1,141 @@
+﻿@model CodeTest.ViewModels.TemplatePreviewViewModel
+@{
+}
+@if (Model != null)
+{
+    <div class="form-group" style="width:60%; margin:auto;">
+        <label class="control-label">Select Template</label>
+        <form id="templateForm" action="@Url.Action("Preview", "Home")" method="get">
+            <select class="form-control" id="templateSelect" name="templateId">
+                @foreach (var item in (SelectList)ViewData["TempLates"])
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </form>
+    </div>
+}
+
+<div class="container mt-3 d-flex justify-content-center">
+    <div class="card bg-light" style="width:60%;" id="subContainer">
+        <div id="dynamicFields" class="row" style="margin:1% auto 1% auto;">
+            @if (Model != null)
+            {
+                <h2 class="text-center mt-3">@Model.Name</h2>
+                @foreach (var item in Model.ClonedCards)
+                {
+                    <div class="form-group">
+                        @if (item.Type == "text")
+                        {
+                            <label>@item.FieldName</label>
+                            <input type="text" class="form-control" name="fieldValues" />
+                        }
+                        else if (item.Type == "dropdown")
+                        {
+                            <label>@item.FieldName</label>
+                            <select class="form-select" name="fieldValues">
+                                @foreach (var option in item.Options)
+                                {
+                                    <option>@option</option>
+                                }
+                            </select>
+                        }
+                        else if (item.Type == "checkbox")
+                        {
+                            <label>@item.FieldName</label>
+                            <div class="checkbox-wrapper">
+                                @{
+                                    var counterCheckbox = 1;
+                                }
+                                @foreach (var option in item.Options)
+                                {
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="fieldValues_@(counterCheckbox)" value="@option" /> @option
+                                    </label>
+                                    counterCheckbox++;
+                                }
+                            </div>
+                        }
+                        else if (item.Type == "radio")
+                        {
+                            <label>@item.FieldName</label>
+                            <div class="radio-wrapper">
+                                @{
+                                    var counterRadio = 1;
+                                    var groupName = "radioGroup_" + counterRadio; // Generate a unique name for each group
+                                }
+                                @foreach (var option in item.Options)
+                                {
+                                    <label class="radio-inline">
+                                        <input type="radio" name="@groupName" value="@option" />
+                                        <span class="radio-label">@option</span>
+                                    </label>
+                                }
+                            </div>
+                        }
+                        else if (item.Type == "image")
+                        {
+                            <label>@item.FieldName</label>
+                            <input type="file" accept="image/*" class="form-control" name="fieldValues" />
+                        }
+                        
+                        <br />
+                        
+                    </div>
+                }
+                <div class="text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            }
+            else
+            {
+                <h2>No Preview Data Found</h2>
+            }
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .checkbox-wrapper, .radio-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Adjust spacing between checkboxes and radio buttons */
+    }
+
+    .checkbox-inline, .radio-inline {
+        margin-right: 10px; /* Adjust spacing between checkboxes and radio buttons */
+    }
+
+    .form-group {
+        margin-bottom: 20px; /* Adjust spacing between form groups */
+    }
+
+    .radio-label {
+        font-size: 16px; /* Adjust font size as needed */
+        margin-left: 5px; /* Add some spacing between radio button and label */
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById("templateForm");
+        var selectElement = document.getElementById("templateSelect");
+
+        selectElement.addEventListener("change", function () {
+            form.submit(); // Submit the form when the selected option changes
+        });
+
+
+        var selectedTemplateId = @Html.Raw(Json.Serialize(ViewBag.SelectedTemplateId));
+        var selectElement = document.getElementById("templateSelect");
+        if (selectedTemplateId !== null) {
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === selectedTemplateId.toString()) {
+                    selectElement.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+    });
+</script>

@@ -1,0 +1,50 @@
+﻿@model List<CodeTest.Models.Template.TemplateModel>
+
+@{
+    ViewData["Title"] = "Template List";
+    int index = 0;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <div class="table-responsive">
+        <table id="templateTable" class="table table-striped table-bordered" style="width:100%">
+            <thead class="table-light">
+                <tr>
+                    <th>No.</th>
+                    <th>Template Name</th>
+                    <th>Fields</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    index++;
+                    <tr>
+                        <td>@index</td>
+                        <td>@item.Name</td>
+                        <td>@item.Contents.Count() Categorys</td> <!-- Display field names as a comma-separated string -->
+                        <td class="text-center">
+                            <a href="@Url.Action("PreviewTemplate", "Template", new { id = item.Id })" class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview">
+                                <i class="bi bi-eye"></i> Preview
+                            </a>
+                          @*   <button onclick="deleteIncomeTitle(@item.Id)" class="btn btn-danger btn-sm ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button> *@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();  // Activate tooltips
+        });
+    </script>
+}

@@ -110,7 +110,7 @@
     <!-- Page Content -->
     <div class="content">
         <!-- Home Section: Shows a summary or list of all templates -->
-        <@* div id="home" class="section">
+        @* div id="home" class="section">
             <h2>Home</h2>
             <p>Below is a list of all template items:</p>
             <ul>
@@ -124,7 +124,8 @@
         <!-- Individual Template Sections -->
         @foreach (var template in Model.Templates)
         {
-            <div id="@template.Name" class="section">
+            <div id="@template.Name" class="section" tabindex="-1">
+                <!-- Add tabindex here -->
                 <h2>@template.Name</h2>
                 @foreach (var content in template.Contents)
                 {
@@ -190,9 +191,20 @@
             $('.navbar a').click(function (e) {
                 e.preventDefault();
                 var target = $(this).attr('href');
+
+                // Smooth scroll to the section
                 $('html, body').stop().animate({
                     scrollTop: $(target).offset().top
-                }, 500, 'linear');
+                }, 500, 'linear', function () {
+                    // Focus on the target section after scrolling
+                    $(target).attr('tabindex', '-1').focus(); // Ensure focus is applied
+
+                    // Optional: Add a visual effect to highlight the section
+                    $(target).css('background-color', '#f0f0f0'); // Example: change background color
+                    setTimeout(function () {
+                        $(target).css('background-color', ''); // Reset background color after a short delay
+                    }, 1000);
+                });
             });
 
             // Smooth scroll for back-to-top button
@@ -202,5 +214,6 @@
             });
         });
     </script>
+
 </body>
 </html>

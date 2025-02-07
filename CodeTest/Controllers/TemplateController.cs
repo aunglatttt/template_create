@@ -46,11 +46,20 @@ namespace CodeTest.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult PreviewTemplate()
+        public async Task<IActionResult> CategoryList()
         {
+            return View(await _context.TemplateModels.AsNoTracking().Include(x => x.Contents).ToListAsync());
+        }
 
-            return View(_context.TemplateModels.OrderByDescending(d => d.Id).Include(d => d.Contents).FirstOrDefault());
+        [HttpGet]
+        public async Task<IActionResult> PreviewTemplate(int? id)
+        {
+            var template = new TemplateModel();
+            if (id != null && id>0)
+                template = await _context.TemplateModels.AsNoTracking().Include(d => d.Contents).FirstOrDefaultAsync(x => x.Id == id);
+            else
+                template = await _context.TemplateModels.AsNoTracking().OrderByDescending(d => d.Id).Include(d => d.Contents).FirstOrDefaultAsync();
+            return View(template);
         }
 
         public async Task<IActionResult> CreatingPage()

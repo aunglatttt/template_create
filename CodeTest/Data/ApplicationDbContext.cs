@@ -1,6 +1,8 @@
 ﻿using CodeTest.Models;
 using CodeTest.Models.Template;
+using CodeTest.Models.TemplateCreation;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeTest.Data
@@ -18,5 +20,7 @@ namespace CodeTest.Data
 
         public DbSet<ContentModel> ContentModels { get; set; }
         public DbSet<TemplateModel> TemplateModels { get; set; }
+        public DbSet<PageCreateModel> PageModels { get; set; }
+
     }
 }

@@ -109,7 +109,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Card Body</label>
-                                        <textarea class="form-control card-body" placeholder="Enter card body text" required></textarea>
+                                        <textarea class="form-control card-body-data" placeholder="Enter card body text" required></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label>Card Footer</label>
@@ -205,78 +205,85 @@
             });
 
             // Submit form
-            $('#submitFormBtn').click(async function () {
-                var formData = {
-                    Name: $('#Name').val(),
-                    Contents: []
-                };
+                 $('#submitFormBtn').click(async function () {
+            // Check if Name field is empty
+            var templateName = $('#Name').val();
+            if (!templateName || templateName.trim() === "") {
+                alert("Template name is required!");
+                return; // Prevent form submission
+            }
 
-                // Collect all content items
-                var contentPromises = $('.card').map(async function () {
-                    var content = {};
+            var formData = {
+                Name: templateName,
+                Contents: []
+            };
 
-                    if ($(this).find('.heading-level').length > 0 && $(this).find('.paragraph-text').length > 0) {
-                        // Group (Heading + Paragraph)
-                        content.Type = 'group';
-                        content.Level = $(this).find('.heading-level').val();
-                        content.HeadingText = $(this).find('.heading-text').val();
-                        content.HeadingColor = $(this).find('.heading-color').val();
-                        content.ParagraphText = $(this).find('.paragraph-text').val();
-                        content.ParagraphColor = $(this).find('.paragraph-color').val();
-                    } else if ($(this).find('.heading-level').length > 0) {
-                        // Heading
-                        content.Type = 'heading';
-                        content.Level = $(this).find('.heading-level').val();
-                        content.Text = $(this).find('.heading-text').val();
-                        content.Color = $(this).find('.heading-color').val();
-                    } else if ($(this).find('.paragraph-text').length > 0) {
-                        // Paragraph
-                        content.Type = 'paragraph';
-                        content.Text = $(this).find('.paragraph-text').val();
-                        content.Color = $(this).find('.paragraph-color').val();
-                    } else if ($(this).find('.card-header').length > 0) {
-                        // Card
-                        content.Type = 'card';
-                        content.Header = $(this).find('.card-header').val();
-                        content.Body = $(this).find('.card-body').val();
-                        content.Footer = $(this).find('.card-footer').val();
-                        content.Color = $(this).find('.card-color').val() || '#ffffff'; // Default color
-                        content.BorderColor = $(this).find('.card-border-color').val();
-                    } else if ($(this).find('.image-upload').length > 0) {
-                        // Image
-                        content.Type = 'image';
-                        var file = $(this).find('.image-upload')[0].files[0];
-                        if (file) {
-                            content.Image = await readFileAsBase64(file);
-                            content.LogoName = $(this).find('.image-logo-name').val();
-                            content.Width = $(this).find('.image-width').val();
-                            content.Height = $(this).find('.image-height').val();
-                            content.ImageType = $(this).find('.image-type').val();
-                        }
+            // Collect all content items
+            var contentPromises = $('.card').map(async function () {
+                var content = {};
+
+                if ($(this).find('.heading-level').length > 0 && $(this).find('.paragraph-text').length > 0) {
+                    // Group (Heading + Paragraph)
+                    content.Type = 'group';
+                    content.Level = $(this).find('.heading-level').val();
+                    content.HeadingText = $(this).find('.heading-text').val();
+                    content.HeadingColor = $(this).find('.heading-color').val();
+                    content.ParagraphText = $(this).find('.paragraph-text').val();
+                    content.ParagraphColor = $(this).find('.paragraph-color').val();
+                } else if ($(this).find('.heading-level').length > 0) {
+                    // Heading
+                    content.Type = 'heading';
+                    content.Level = $(this).find('.heading-level').val();
+                    content.Text = $(this).find('.heading-text').val();
+                    content.Color = $(this).find('.heading-color').val();
+                } else if ($(this).find('.paragraph-text').length > 0) {
+                    // Paragraph
+                    content.Type = 'paragraph';
+                    content.Text = $(this).find('.paragraph-text').val();
+                    content.Color = $(this).find('.paragraph-color').val();
+                } else if ($(this).find('.card-header').length > 0) {
+                    // Card
+                    content.Type = 'card';
+                    content.Header = $(this).find('.card-header').val();
+                    content.Body = $(this).find('.card-body-data').val(); // Ensure this is captured properly
+                    content.Footer = $(this).find('.card-footer').val();
+                    content.Color = $(this).find('.card-color').val() || '#ffffff'; // Default color
+                    content.BorderColor = $(this).find('.card-border-color').val();
+                } else if ($(this).find('.image-upload').length > 0) {
+                    // Image
+                    content.Type = 'image';
+                    var file = $(this).find('.image-upload')[0].files[0];
+                    if (file) {
+                        content.Image = await readFileAsBase64(file);
+                        content.LogoName = $(this).find('.image-logo-name').val();
+                        content.Width = $(this).find('.image-width').val();
+                        content.Height = $(this).find('.image-height').val();
+                        content.ImageType = $(this).find('.image-type').val();
                     }
+                }
 
-                    return content;
-                }).get();
+                return content;
+            }).get();
 
-                // Wait for all promises to resolve
-                formData.Contents = await Promise.all(contentPromises);
+            // Wait for all promises to resolve
+            formData.Contents = await Promise.all(contentPromises);
 
-                // Send data to server
-                fetch('/Template/SaveTemplate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                       window.location.href = '/Template/PreviewTemplate';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            });
+            // Send data to server
+            fetch('/Template/SaveTemplate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/Template/PreviewTemplate';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
 
             // Helper function to read file as base64
             function readFileAsBase64(file) {

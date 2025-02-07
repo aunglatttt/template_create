@@ -1,0 +1,53 @@
+﻿@model List<CodeTest.Models.TemplateCreation.PageCreateModel>
+
+@{
+    ViewData["Title"] = "Page List";
+}
+
+@{
+    ViewData["Title"] = "Page List";
+}
+
+<div class="container">
+    <h2>Page List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Page Name</th>
+                <th>Templates</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <ul>
+                            @foreach (var template in item.Templates)
+                            {
+                                <li>@template.Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary publishBtn" data-page-id="@item.Id">Publish</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Publish page
+            $('.publishBtn').click(function () {
+                var pageId = $(this).data('page-id');
+                window.open(`/Template/PublishedPage/${pageId}`, '_blank');
+            });
+        });
+    </script>
+}
